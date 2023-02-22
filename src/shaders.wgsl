@@ -36,7 +36,7 @@ var tex_sampler: sampler;
 @vertex
 fn vertex_main(vert: VertexInput) -> VertexOutput {
     var out: VertexOutput;
-    var pos = vert.position;
+    var pos = vert.position/250;
     out.position = view_params.proj_view * float4(pos, 1.0);
     out.transformed_eye = view_params.eye_pos.xyz;
     out.ray_dir = pos - out.transformed_eye;
@@ -44,9 +44,9 @@ fn vertex_main(vert: VertexInput) -> VertexOutput {
 };
 
 fn intersect_box(orig: float3, dir: float3) -> float2 {
-	var box_min = float3(0.0);
-	var box_max = float3(1.0);
-	var inv_dir = 1.0 / dir;
+	var box_min = float3(-250, -250, 0)/250;
+	var box_max = float3(250, 250, 40)/250;
+	var inv_dir = 1 / dir;
 	var tmin_tmp = (box_min - orig) * inv_dir;
 	var tmax_tmp = (box_max - orig) * inv_dir;
 	var tmin = min(tmin_tmp, tmax_tmp);
