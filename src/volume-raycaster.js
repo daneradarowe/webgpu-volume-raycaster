@@ -11,6 +11,7 @@ import {
   getVolumeDimensions,
   uploadData,
   uploadImage,
+  uploadRadarVolume,
   uploadVolume,
   volumes,
 } from "./volume.js";
@@ -115,12 +116,13 @@ import {
   var colormapName = "Cool Warm";
   var colormapTexture = await uploadImage(device, colormaps[colormapName]);
 
-  var volumeDims = getVolumeDimensions(volumes[volumeName]);
-  var volumeTexture = await fetchVolume(volumes[volumeName]).then(
-    (volumeData) => {
-      return uploadVolume(device, volumeDims, volumeData);
-    }
-  );
+  var volumeDims = [500, 500, 40];
+  // var volumeTexture = await fetchVolume(volumes[volumeName]).then(
+  //   (volumeData) => {
+  //     return uploadVolume(device, volumeDims, volumeData);
+  //   }
+  // );
+  let volumeTexture = await uploadRadarVolume(device);
 
   var volumeDataBuffer = await uploadData(device);
 
@@ -281,26 +283,26 @@ import {
     }
 
     // Fetch a new volume or colormap if a new one was selected
-    if (volumeName != volumePicker.value) {
-      volumeName = volumePicker.value;
-      history.replaceState(history.state, "", "#" + volumeName);
+    // if (volumeName != volumePicker.value) {
+    //   volumeName = volumePicker.value;
+    //   history.replaceState(history.state, "", "#" + volumeName);
 
-      volumeDims = getVolumeDimensions(volumes[volumeName]);
+    //   volumeDims = getVolumeDimensions(volumes[volumeName]);
 
-      volumeTexture = await fetchVolume(volumes[volumeName]).then(
-        (volumeData) => {
-          return uploadVolume(device, volumeDims, volumeData);
-        }
-      );
+    //   volumeTexture = await fetchVolume(volumes[volumeName]).then(
+    //     (volumeData) => {
+    //       return uploadVolume(device, volumeDims, volumeData);
+    //     }
+    //   );
 
-      //   const volumeData = await uploadData(device);
+    //   //   const volumeData = await uploadData(device);
 
-      bindGroupEntries[1].resource = volumeTexture.createView();
-      bindGroup = device.createBindGroup({
-        layout: bindGroupLayout,
-        entries: bindGroupEntries,
-      });
-    }
+    //   bindGroupEntries[1].resource = volumeTexture.createView();
+    //   bindGroup = device.createBindGroup({
+    //     layout: bindGroupLayout,
+    //     entries: bindGroupEntries,
+    //   });
+    // }
 
     if (colormapName != colormapPicker.value) {
       colormapName = colormapPicker.value;

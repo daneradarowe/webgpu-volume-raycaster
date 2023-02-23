@@ -87,6 +87,12 @@ export async function downloadData(uri) {
   return data;
 }
 
+export async function downloadUint8Data(uri) {
+  const response = await axios.get(uri, { responseType: "arraybuffer" });
+  const data = new Uint8Array(response.data);
+  return data;
+}
+
 function padVolume(buf, volumeDims) {
   const paddedVolumeDims = [
     alignTo(volumeDims[0], 256),
@@ -150,6 +156,43 @@ export async function fetchVolume(file) {
     loadingProgressText.innerHTML = "Error loading volume";
   }
   return null;
+}
+
+export async function uploadRadarVolume(device) {
+  const volumeDimensions = [500, 500, 40];
+  const volumeTexture = device.createTexture({
+    size: volumeDimensions,
+    format: "r8unorm",
+    dimension: "3d",
+    usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
+  });
+
+  let volumeData = await downloadUint8Data(
+    "./data/2017070716234600dBZ.vol.bin_u8"
+  );
+  volumeData = padVolume(volumeData, volumeDimensions);
+  console.log(volumeData);
+  const uploadBuf = device.createBuffer({
+    size: volumeData.length,
+    usage: GPUBufferUsage.COPY_SRC,
+    mappedAtCreation: true,
+  });
+  new Uint8Array(uploadBuf.getMappedRange()).set(volumeData);
+  uploadBuf.unmap();
+
+  const commandEncoder = device.createCommandEncoder();
+
+  const src = {
+    buffer: uploadBuf,
+    bytesPerRow: alignTo(volumeDimensions[0], 256),
+    rowsPerImage: volumeDimensions[1],
+  };
+  const dst = { texture: volumeTexture };
+  commandEncoder.copyBufferToTexture(src, dst, volumeDimensions);
+  device.queue.submit([commandEncoder.finish()]);
+  await device.queue.onSubmittedWorkDone();
+
+  return volumeTexture;
 }
 
 export async function uploadVolume(device, volumeDims, volumeData) {
