@@ -33,6 +33,9 @@ var colormap: texture_2d<f32>;
 @group(0) @binding(3)
 var tex_sampler: sampler;
 
+@group(0) @binding(4)
+var<storage, read> voldata: array<f32>;
+
 @vertex
 fn vertex_main(vert: VertexInput) -> VertexOutput {
     var out: VertexOutput;
@@ -63,6 +66,13 @@ fn linear_to_srgb(x: f32) -> f32 {
 	return 1.055 * pow(x, 1.0 / 2.4) - 0.055;
 }
 
+fn sampledVolumeDensity(position: float3) -> f32 {
+	var volumeCoordinatePosition = float3(250 + position.x * 250, 250 + position.y * 250, position.z * 250);
+	var index = volumeCoordinatePosition.z * 500 * 500 + volumeCoordinatePosition.y * 500 + volumeCoordinatePosition.x;
+  	var value = voldata[i32(index)];
+  	return (31.5 + value)/(31.5+95.5);
+}
+
 @fragment
 fn fragment_main(in: VertexOutput) -> @location(0) float4 {
     var ray_dir = normalize(in.ray_dir);
@@ -79,7 +89,8 @@ fn fragment_main(in: VertexOutput) -> @location(0) float4 {
 	var dt = dt_scale * min(dt_vec.x, min(dt_vec.y, dt_vec.z));
 	var p = in.transformed_eye + t_hit.x * ray_dir;
 	for (var t = t_hit.x; t < t_hit.y; t = t + dt) {
-		var val = textureSampleLevel(volume, tex_sampler, p, 0.0).r;
+		// var val = textureSampleLevel(volume, tex_sampler, p, 0.0).r;
+		var val = sampledVolumeDensity(p);
 		var val_color = float4(textureSampleLevel(colormap, tex_sampler, float2(val, 0.5), 0.0).rgb, val);
 		// Opacity correction
 		val_color.a = 1.0 - pow(1.0 - val_color.a, dt_scale);

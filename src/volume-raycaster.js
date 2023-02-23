@@ -9,6 +9,7 @@ import {
   fillSelector,
   getCubeMesh,
   getVolumeDimensions,
+  uploadData,
   uploadImage,
   uploadVolume,
   volumes,
@@ -121,6 +122,10 @@ import {
     }
   );
 
+  var volumeDataBuffer = await uploadData(device);
+
+  console.log(volumeDataBuffer);
+
   // Setup render outputs
   var swapChainFormat = "bgra8unorm";
   context.configure({
@@ -151,6 +156,11 @@ import {
         binding: 3,
         visibility: GPUShaderStage.FRAGMENT,
         sampler: { type: "filtering" },
+      },
+      {
+        binding: 4,
+        visibility: GPUShaderStage.FRAGMENT,
+        buffer: { type: "read-only-storage" },
       },
     ],
   });
@@ -251,6 +261,7 @@ import {
     { binding: 1, resource: volumeTexture.createView() },
     { binding: 2, resource: colormapTexture.createView() },
     { binding: 3, resource: sampler },
+    { binding: 4, resource: { buffer: volumeDataBuffer } },
   ];
   var bindGroup = device.createBindGroup({
     layout: bindGroupLayout,
@@ -281,6 +292,8 @@ import {
           return uploadVolume(device, volumeDims, volumeData);
         }
       );
+
+      //   const volumeData = await uploadData(device);
 
       bindGroupEntries[1].resource = volumeTexture.createView();
       bindGroup = device.createBindGroup({

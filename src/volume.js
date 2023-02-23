@@ -4,6 +4,7 @@ import virdis from "./colormaps/matplotlib-virdis.png";
 import rainbow from "./colormaps/rainbow.png";
 import samselGreen from "./colormaps/samsel-linear-green.png";
 import samselYgb from "./colormaps/samsel-linear-ygb-1211g.png";
+import axios from "axios";
 
 export const volumes = {
   Fuel: "7d87jcsh0qodk78/fuel_64x64x64_uint8.raw",
@@ -78,6 +79,12 @@ export function getCubeMesh() {
 
 export function alignTo(val, align) {
   return Math.floor((val + align - 1) / align) * align;
+}
+
+export async function downloadData(uri) {
+  const response = await axios.get(uri, { responseType: "arraybuffer" });
+  const data = new Float32Array(response.data);
+  return data;
 }
 
 function padVolume(buf, volumeDims) {
@@ -176,6 +183,24 @@ export async function uploadVolume(device, volumeDims, volumeData) {
   await device.queue.onSubmittedWorkDone();
 
   return volumeTexture;
+}
+
+export async function uploadData(device) {
+  const data = await downloadData("./data/2017070716234600dBZ.vol.bin");
+  console.log(data);
+  const dataBuffer = device.createBuffer({
+    size: data.byteLength,
+    format: "f32",
+    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+    mappedAtCreation: true,
+  });
+  new Float32Array(dataBuffer.getMappedRange()).set(data);
+  dataBuffer.unmap();
+  //   device.queue.writeBuffer(dataBuffer, 0, data);
+
+  console.log(dataBuffer);
+
+  return dataBuffer;
 }
 
 export async function uploadImage(device, imageSrc) {
