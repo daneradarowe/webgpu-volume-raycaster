@@ -233,7 +233,7 @@ import {
   ]);
   var proj = mat4.perspective(
     mat4.create(),
-    (50 * Math.PI) / 180.0,
+    (30 * Math.PI) / 180.0,
     canvas.width / canvas.height,
     0.001,
     10

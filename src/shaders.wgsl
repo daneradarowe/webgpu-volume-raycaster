@@ -90,7 +90,7 @@ fn fragment_main(in: VertexOutput) -> @location(0) float4 {
 	var p = in.transformed_eye + t_hit.x * ray_dir;
 	for (var t = t_hit.x; t < t_hit.y; t = t + dt) {
 		var val = textureSampleLevel(volume, tex_sampler, float3((1+p.x)/2, (1+p.y)/2, p.z*(250/40)), 0.0).r;
-		val = max(0.0, (val-0.56)*12);
+		val = max(0.0, (val-0.3) *3);
 		// var val = sampledVolumeDensity(p);
 		var val_color = float4(textureSampleLevel(colormap, tex_sampler, float2(val, 0.5), 0.0).rgb, val);
 		// Opacity correction

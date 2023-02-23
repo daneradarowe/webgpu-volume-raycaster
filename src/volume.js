@@ -168,7 +168,7 @@ export async function uploadRadarVolume(device) {
   });
 
   let volumeData = await downloadUint8Data(
-    "./data/2017070716234600dBZ.vol.bin_u8"
+    "./data/2021062416234800dBZ.vol.bin_u8"
   );
   volumeData = padVolume(volumeData, volumeDimensions);
   console.log(volumeData);
