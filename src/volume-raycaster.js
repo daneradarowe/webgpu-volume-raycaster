@@ -60,8 +60,8 @@ import {
     }
   }
 
-  const defaultEye = vec3.set(vec3.create(), 0.5, 0.5, 2.5);
-  const center = vec3.set(vec3.create(), 0.5, 0.5, 0.5);
+  const defaultEye = vec3.set(vec3.create(), 0.0, 0.0, 2.0);
+  const center = vec3.set(vec3.create(), 0.0, 0.0, 0.0);
   const up = vec3.set(vec3.create(), 0.0, 1.0, 0.0);
 
   const cube = getCubeMesh();
