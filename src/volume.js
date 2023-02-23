@@ -4,6 +4,7 @@ import virdis from "./colormaps/matplotlib-virdis.png";
 import rainbow from "./colormaps/rainbow.png";
 import samselGreen from "./colormaps/samsel-linear-green.png";
 import samselYgb from "./colormaps/samsel-linear-ygb-1211g.png";
+import dBZRadarscope from "./colormaps/dbz-radarscope.png"
 import axios from "axios";
 
 export const volumes = {
@@ -19,6 +20,7 @@ export const volumes = {
 };
 
 export const colormaps = {
+  "dBZ Radarscope": dBZRadarscope,
   "Cool Warm": coolwarm,
   "Matplotlib Plasma": plasma,
   "Matplotlib Virdis": virdis,
@@ -53,21 +55,21 @@ export function getCubeMesh() {
 
   // prettier-ignore
   var cubeVertices = [
-        250,  250, 0, 
-       -250,  250, 0, 
-        250,  250, 40, 
-       -250,  250, 40, 
-       -250, -250, 40, 
-       -250,  250, 0, 
-       -250, -250, 0,
-        250,  250, 0, 
-        250, -250, 0, 
-        250,  250, 40, 
-        250, -250, 40, 
-       -250, -250, 40, 
-        250, -250, 0, 
-       -250, -250, 0
-    ];
+    250, 250, 0,
+    -250, 250, 0,
+    250, 250, 40,
+    -250, 250, 40,
+    -250, -250, 40,
+    -250, 250, 0,
+    -250, -250, 0,
+    250, 250, 0,
+    250, -250, 0,
+    250, 250, 40,
+    250, -250, 40,
+    -250, -250, 40,
+    250, -250, 0,
+    -250, -250, 0
+  ];
 
   // Indices are required to render a triangle strip, but ours here are trivial
   var cubeIndices = [];

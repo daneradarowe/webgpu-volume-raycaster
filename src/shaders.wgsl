@@ -83,18 +83,17 @@ fn fragment_main(in: VertexOutput) -> @location(0) float4 {
 	}
 	t_hit.x = max(t_hit.x, 0.0);
 
-    var color = float4(0.0);
-	var dt_vec = 1.0 / (float3(1000,1000,80) * abs(ray_dir));
-    var dt_scale = 1.0;
+  var color = float4(0.0);
+	var dt_vec = 1.0 / (float3(1024.0) * abs(ray_dir));
+  var dt_scale = 1.0;
 	var dt = dt_scale * min(dt_vec.x, min(dt_vec.y, dt_vec.z));
 	var p = in.transformed_eye + t_hit.x * ray_dir;
 	for (var t = t_hit.x; t < t_hit.y; t = t + dt) {
 		var val = textureSampleLevel(volume, tex_sampler, float3((1+p.x)/2, (1+p.y)/2, p.z*(250/40)), 0.0).r;
-		val = max(0.0, (val-0.3) *3);
-		// var val = sampledVolumeDensity(p);
+		val = max(0.0, (val-0.3) * 2);
 		var val_color = float4(textureSampleLevel(colormap, tex_sampler, float2(val, 0.5), 0.0).rgb, val);
 		// Opacity correction
-		val_color.a = 1.0 - pow(1.0 - val_color.a, dt_scale);
+	  val_color.a = 1.0 - pow(1.0 - val_color.a, dt_scale);
         // WGSL can't do left hand size swizzling!?!?
         // https://github.com/gpuweb/gpuweb/issues/737 
         // That's ridiculous for a shader language.
@@ -103,6 +102,7 @@ fn fragment_main(in: VertexOutput) -> @location(0) float4 {
 		color.g = tmp.g;
 		color.b = tmp.b;
 		color.a = color.a + (1.0 - color.a) * val_color.a;
+
 		if (color.a >= 0.95) {
 			break;
 		}
@@ -112,7 +112,7 @@ fn fragment_main(in: VertexOutput) -> @location(0) float4 {
     color.r = linear_to_srgb(color.r);
     color.g = linear_to_srgb(color.g);
     color.b = linear_to_srgb(color.b);
-	// color.a = 0.1;
+
     return color;
 }
 

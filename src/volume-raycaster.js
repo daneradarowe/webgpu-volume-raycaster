@@ -121,7 +121,7 @@ import {
     }
   }
 
-  var colormapName = "Cool Warm";
+  var colormapName = "dBZ Radarscope";
   var colormapTexture = await uploadImage(device, colormaps[colormapName]);
 
   var volumeDims = [500, 500, 40];
