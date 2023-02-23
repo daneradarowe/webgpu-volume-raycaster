@@ -94,6 +94,14 @@ import {
     minFilter: "linear",
   });
 
+  // const sampler = device.createSampler({
+  //   addressModeU: "repeat",
+  //   addressModeV: "repeat",
+  //   magFilter: "linear",
+  //   minFilter: "linear",
+  //   mipmapFilter: "linear",
+  // });
+
   var volumePicker = document.getElementById("volumeList");
   var colormapPicker = document.getElementById("colormapList");
 
@@ -227,8 +235,8 @@ import {
     mat4.create(),
     (50 * Math.PI) / 180.0,
     canvas.width / canvas.height,
-    0.1,
-    100
+    0.001,
+    10
   );
   var projView = mat4.create();
 
